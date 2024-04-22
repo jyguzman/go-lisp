@@ -50,11 +50,11 @@ var keywords = map[string]TokenType{
 }
 
 type Token struct {
-	token_type TokenType
-	pos        int
-	literal    any
+	tokenType TokenType
+	pos       int
+	literal   any
 }
 
 func (t *Token) str() string {
-	return fmt.Sprintf("Token(%s, %d, %v)", t.token_type, t.pos, t.literal)
+	return fmt.Sprintf("Token(%s, %d, %v)", t.tokenType, t.pos, t.literal)
 }

@@ -20,4 +20,11 @@ func main() {
 	lexer := NewLexer(source)
 	lexer.lex()
 	lexer.print()
+	parser := NewParser(lexer.tokens)
+	exps := parser.parse()
+	fmt.Println("\nin main")
+	for _, list := range exps {
+		list.print()
+		fmt.Println()
+	}
 }

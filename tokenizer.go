@@ -15,7 +15,7 @@ type Lexer struct {
 
 func NewLexer(source string) *Lexer {
 	runeArray := []rune(source)
-	return &Lexer{runeArray, -1, []Token{}}
+	return &Lexer{runeArray, 0, []Token{}}
 }
 
 func (l *Lexer) isEof() bool {
@@ -107,7 +107,7 @@ func (l *Lexer) lexNumber() Token {
 
 func (l *Lexer) match() Token {
 	c := l.peek()
-	for c == ' ' || c == '\n' || c == '\r' {
+	for c == ' ' || c == '\n' || c == '\r' || c == '\t' {
 		c = l.advance()
 	}
 	var token Token
