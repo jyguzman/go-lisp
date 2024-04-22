@@ -15,7 +15,7 @@ type Lexer struct {
 
 func NewLexer(source string) *Lexer {
 	runeArray := []rune(source)
-	return &Lexer{runeArray, 0, []Token{}}
+	return &Lexer{runeArray, -1, []Token{}}
 }
 
 func (l *Lexer) isEof() bool {
