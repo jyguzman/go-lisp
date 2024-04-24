@@ -78,7 +78,11 @@ func (l *Lexer) lexString() Token {
 
 func (l *Lexer) lexNumber() Token {
 	start_pos := l.pos
-	numStr, isFloat := "", false
+	numStr, isFloat, negate := "", false, 1
+	if l.peek() == '-' {
+		negate = -1
+		l.advance()
+	}
 	for c := l.peek(); unicode.IsDigit(c) || c == '.'; {
 		if c == '.' {
 			isFloat = true
@@ -91,6 +95,7 @@ func (l *Lexer) lexNumber() Token {
 		number    any
 		err       error
 	)
+	fmt.Println(numStr)
 	if isFloat {
 		tokenType = FLOAT
 		number, err = strconv.ParseFloat(numStr, 64)
@@ -99,6 +104,15 @@ func (l *Lexer) lexNumber() Token {
 		number, err = strconv.ParseInt(numStr, 10, 32)
 	}
 	if err != nil {
+		fmt.Println("Error parsing number.")
+		os.Exit(1)
+	}
+	switch num := number.(type) {
+	case int64:
+		return Token{tokenType, start_pos, int64(negate) * num}
+	case float64:
+		return Token{tokenType, start_pos, float64(negate) * num}
+	default:
 		fmt.Println("Error parsing number.")
 		os.Exit(1)
 	}
@@ -127,7 +141,12 @@ func (l *Lexer) match() Token {
 	case c == '+':
 		token = Token{PLUS, l.pos, "+"}
 	case c == '-':
-		token = Token{MINUS, l.pos, "-"}
+		if unicode.IsDigit(l.peekAhead()) {
+			return l.lexNumber()
+			//l.advance()
+		} else {
+			token = Token{MINUS, l.pos, "-"}
+		}
 	case c == '*':
 		token = Token{MINUS, l.pos, "*"}
 	case c == '/':

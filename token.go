@@ -10,14 +10,11 @@ const (
 	RPAREN TokenType = "RPAREN"
 	SEMI   TokenType = "SEMICOLON"
 
-	// keywords
+	// special forms
 	DEF    TokenType = "DEF"
-	LET    TokenType = "LET"
+	IF     TokenType = "IF"
 	LAMBDA TokenType = "LAMBDA"
 	LIST   TokenType = "LIST"
-	IF     TokenType = "IF"
-
-	IDENT TokenType = "IDENT"
 
 	// types
 	TRUE    TokenType = "TRUE"
@@ -27,7 +24,7 @@ const (
 	STRING  TokenType = "STRING"
 	NIL     TokenType = "NIL"
 
-	// operators
+	// symbols
 	PLUS     TokenType = "PLUS"
 	MINUS    TokenType = "MINUS"
 	MULTIPLY TokenType = "MULTIPLY"
@@ -37,13 +34,13 @@ const (
 	LESS     TokenType = "LESS"
 	GEQ      TokenType = "GEQ" // >=
 	LEQ      TokenType = "LEQ" // <=
+	IDENT    TokenType = "IDENT"
 
 	EOF TokenType = "EOF"
 )
 
 var keywords = map[string]TokenType{
 	"def":    DEF,
-	"let":    LET,
 	"lambda": LAMBDA,
 	"list":   LIST,
 	"if":     IF,

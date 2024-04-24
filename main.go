@@ -6,25 +6,23 @@ import (
 )
 
 func readSourceFile(path string) string {
-	b, err := os.ReadFile(path) // just pass the file name
+	sourceBytes, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Print(err)
 		return ""
 	}
-	str := string(b) // convert content to a 'string'
-	return str
+	return string(sourceBytes)
 }
 
 func main() {
 	source := readSourceFile("test.glisp")
 	lexer := NewLexer(source)
 	lexer.lex()
-	lexer.print()
+	// lexer.print()
 	parser := NewParser(lexer.tokens)
 	exps := parser.parse()
 	fmt.Println("\nin main")
 	for _, list := range exps {
-		list.print()
-		fmt.Println()
+		fmt.Println(list)
 	}
 }

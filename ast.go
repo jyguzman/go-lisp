@@ -1,28 +1,51 @@
 package main
 
-import "fmt"
+type ValType int
 
-type Cons struct {
-	car any
-	cdr *Cons
+const (
+	LInteger ValType = iota
+	LFloat
+	LString
+	LBoolean
+	LOperator
+	LSymbol
+	LSpecial
+	LLambda
+	LList
+	LNil
+)
+
+type LispValue struct {
+	Type ValType
+	Val  interface{}
 }
 
-func NewCons(car any, cdr *Cons) *Cons {
-	return &Cons{car, cdr}
+type Lambda struct {
+	Params []LispValue
+	Body   []LispValue
 }
 
-func (c *Cons) print() {
-	ptr := c
-	for ptr != nil {
-		if ptr.cdr != nil {
-			fmt.Printf("%v -> ", ptr.car)
-		} else {
-			fmt.Printf("%v", ptr.car)
+var operators []TokenType = []TokenType{
+	PLUS, MINUS, MULTIPLY, DIVIDE, EQUALS, GREATER, GEQ, LESS, LEQ,
+}
+
+var specialForms []TokenType = []TokenType{
+	IF, DEF, LAMBDA,
+}
+
+func contains(tokenTypes []TokenType, tokenType TokenType) bool {
+	for _, tokType := range tokenTypes {
+		if tokType == tokenType {
+			return true
 		}
-		ptr = ptr.cdr
 	}
+	return false
 }
 
-func cons(car any, cdr *Cons) *Cons {
-	return &Cons{car, cdr}
+func isOperator(op TokenType) bool {
+	return contains(operators, op)
+}
+
+func isSpecialForm(sf TokenType) bool {
+	return contains(specialForms, sf)
 }

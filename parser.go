@@ -22,41 +22,53 @@ func (p *Parser) advance() Token {
 	return p.tokens[p.pos]
 }
 
-func (p *Parser) parseAtom() *Cons {
+func (p *Parser) parseAtom() LispValue {
 	t := p.peek()
-	if t.tokenType == STRING || t.tokenType == FLOAT ||
-		t.tokenType == INTEGER || t.tokenType == IDENT || t.tokenType == DEF || t.tokenType == PLUS {
-		return cons(t.literal, nil)
+	switch {
+	case t.tokenType == FLOAT:
+		return LispValue{LFloat, t.literal}
+	case t.tokenType == INTEGER:
+		return LispValue{LInteger, t.literal}
+	case t.tokenType == STRING:
+		return LispValue{LString, t.literal}
+	case t.tokenType == LAMBDA:
+		return LispValue{LLambda, t.literal}
+	case t.tokenType == TRUE || t.tokenType == FALSE:
+		return LispValue{LBoolean, t.literal}
+	case t.tokenType == IDENT:
+		return LispValue{LSymbol, t.literal}
+	case isOperator(t.tokenType):
+		return LispValue{LSymbol, t.literal}
+	case isSpecialForm(t.tokenType):
+		return LispValue{LSpecial, t.literal}
+	default:
+		return LispValue{LNil, nil}
 	}
-	return &Cons{nil, nil}
 }
 
-func (p *Parser) parseList() *Cons {
+func (p *Parser) parseList() LispValue {
 	t := p.advance()
-	cell := p.parseExpression()
-	next := cell
+	list := []LispValue{p.parseExpression()}
+
 	for t.tokenType != RPAREN && t.tokenType != EOF {
 		t = p.advance()
-		if p.peek().tokenType == RPAREN {
+		if t.tokenType == RPAREN {
 			break
 		}
-		next.cdr = p.parseExpression()
-		for next.cdr != nil {
-			next = next.cdr
-		}
+		list = append(list, p.parseExpression())
 	}
-	return cell
+	return LispValue{LList, list}
 }
 
-func (p *Parser) parseExpression() *Cons {
+func (p *Parser) parseExpression() LispValue {
 	if p.peek().tokenType == LPAREN {
 		return p.parseList()
 	}
 	return p.parseAtom()
 }
 
-func (p *Parser) parse() []*Cons {
-	expressions := []*Cons{}
+func (p *Parser) parse() []LispValue {
+	expressions := []LispValue{}
 	for !p.isEof() {
 		t := p.peek()
 		for t.tokenType == RPAREN {
@@ -70,5 +82,4 @@ func (p *Parser) parse() []*Cons {
 		p.advance()
 	}
 	return expressions
-
 }
