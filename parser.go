@@ -38,7 +38,7 @@ func (p *Parser) parseAtom() LispValue {
 	case t.tokenType == IDENT:
 		return LispValue{LSymbol, t.literal}
 	case isOperator(t.tokenType):
-		return LispValue{LSymbol, t.literal}
+		return LispValue{LOperator, t.literal}
 	case isSpecialForm(t.tokenType):
 		return LispValue{LSpecial, t.literal}
 	default:
